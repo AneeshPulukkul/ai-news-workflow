@@ -1,0 +1,14 @@
+{
+  "generate_article": {
+    "prompt": "Based on the following news articles, write a comprehensive and engaging article of approximately {word_count} words. The article should synthesize the key information, provide insightful analysis, and be written in a clear and professional tone. Ensure the article is well-structured with a compelling title, an introduction, a body, and a conclusion.\n\nSource Articles:\n{sources}",
+    "description": "Prompt to generate a full article from a list of source articles."
+  },
+  "generate_social_post": {
+    "prompt": "Based on the following article, generate a social media post for {platform}. The post should be concise, engaging, and include relevant hashtags. The tone should be appropriate for the platform.\n\nArticle Title: {title}\nArticle Content:\n{content}",
+    "description": "Prompt to generate a social media post from a generated article."
+  },
+  "summarize_article": {
+    "prompt": "Summarize the following article in no more than 3 sentences. The summary should capture the main points and be easy to understand.\n\nArticle Content:\n{content}",
+    "description": "Prompt to generate a brief summary of an article."
+  }
+}

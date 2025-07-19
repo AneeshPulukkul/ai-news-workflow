@@ -36,6 +36,22 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def _extract_keywords(text: str, category: str) -> List[str]:
+    """Extract relevant keywords from article text"""
+    keywords = []
+    category_keywords = SEARCH_KEYWORDS.get(category, [])
+
+    if not text:
+        return keywords
+
+    text_lower = text.lower()
+    for keyword in category_keywords:
+        if keyword.lower() in text_lower:
+            keywords.append(keyword)
+
+    return keywords
+
+
 class NewsDatabase:
     """
     Simple SQLite database handler for storing news articles
@@ -153,6 +169,32 @@ class NewsDatabase:
             logger.error(f"Error retrieving articles: {e}")
             return []
 
+    def get_source_stats(self) -> Dict[str, int]:
+        """
+        Get statistics on the number of articles per source.
+        
+        Returns:
+            Dictionary with source names as keys and article counts as values.
+        """
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                
+                query = '''
+                    SELECT source, COUNT(*) as article_count
+                    FROM articles
+                    WHERE source IS NOT NULL
+                    GROUP BY source
+                    ORDER BY article_count DESC
+                '''
+                
+                cursor.execute(query)
+                stats = {source: count for source, count in cursor.fetchall()}
+                return stats
+        except Exception as e:
+            logger.error(f"Error retrieving source stats: {e}")
+            return {}
+
 
 class RSSFeedScraper:
     """RSS Feed scraper for news sources"""
@@ -194,7 +236,7 @@ class RSSFeedScraper:
                         'category': category,
                         'published_date': getattr(entry, 'published', ''),
                         'scraped_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        'keywords': self._extract_keywords(article.text, category),
+                        'keywords': _extract_keywords(article.text, category),
                         'summary': entry.get('summary', article.text[:500] + '...' if len(article.text) > 500 else article.text)
                     }
                     
@@ -212,18 +254,6 @@ class RSSFeedScraper:
             logger.error(f"Error scraping RSS feed {feed_url}: {e}")
         
         return articles
-    
-    def _extract_keywords(self, text: str, category: str) -> List[str]:
-        """Extract relevant keywords from article text"""
-        keywords = []
-        category_keywords = SEARCH_KEYWORDS.get(category, [])
-        
-        text_lower = text.lower()
-        for keyword in category_keywords:
-            if keyword.lower() in text_lower:
-                keywords.append(keyword)
-        
-        return keywords
 
 
 class NewsAPIScraper:
@@ -281,7 +311,7 @@ class NewsAPIScraper:
                         'category': category,
                         'published_date': article['publishedAt'],
                         'scraped_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        'keywords': self._extract_keywords(full_article.text or article.get('content', ''), category),
+                        'keywords': _extract_keywords(full_article.text or article.get('content', ''), category),
                         'summary': article.get('description', '')
                     }
                     
@@ -299,18 +329,6 @@ class NewsAPIScraper:
             logger.error(f"Error scraping NewsAPI.org for {category}: {e}")
         
         return articles
-    
-    def _extract_keywords(self, text: str, category: str) -> List[str]:
-        """Extract relevant keywords from article text"""
-        keywords = []
-        category_keywords = SEARCH_KEYWORDS.get(category, [])
-        
-        text_lower = text.lower()
-        for keyword in category_keywords:
-            if keyword.lower() in text_lower:
-                keywords.append(keyword)
-        
-        return keywords
 
 
 class WebScraper:
@@ -340,18 +358,26 @@ class WebScraper:
             
             soup = BeautifulSoup(response.content, 'html.parser')
             
-            # Find article links (this is a simplified approach)
-            article_links = soup.find_all('a', href=True)
+            # Find article links using selectors from config if available
+            article_links = []
+            if 'selectors' in source_config and 'article_link' in source_config['selectors']:
+                article_links = soup.select(source_config['selectors']['article_link'])
+            else:
+                # Fallback to generic link finding
+                article_links = soup.find_all('a', href=True)
+
             article_urls = []
             
             for link in article_links:
                 href = link.get('href')
-                if href and ('article' in href or 'story' in href or '/20' in href):
+                if href:
                     full_url = urljoin(source_config['url'], href)
-                    if full_url not in article_urls:
-                        article_urls.append(full_url)
-                        if len(article_urls) >= SCRAPING_CONFIG['max_articles_per_source']:
-                            break
+                    # Basic filtering to avoid non-article links
+                    if urlparse(full_url).path and ('article' in full_url or 'story' in full_url or '/20' in full_url):
+                        if full_url not in article_urls:
+                            article_urls.append(full_url)
+                            if len(article_urls) >= SCRAPING_CONFIG['max_articles_per_source']:
+                                break
             
             # Scrape individual articles
             for url in article_urls:
@@ -369,9 +395,9 @@ class WebScraper:
                         'url': url,
                         'source': source_config['name'],
                         'category': category,
-                        'published_date': article.publish_date.strftime('%Y-%m-%d %H:%M:%S') if article.publish_date else datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                        'published_date': article.publish_date.strftime('%Y-%m-%d %H:%M:%S') if article.publish_date else None,
                         'scraped_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                        'keywords': self._extract_keywords(article.text, category),
+                        'keywords': _extract_keywords(article.text, category),
                         'summary': article.summary or (article.text[:500] + '...' if len(article.text) > 500 else article.text)
                     }
                     
@@ -389,18 +415,6 @@ class WebScraper:
             logger.error(f"Error scraping website {source_config['name']}: {e}")
         
         return articles
-    
-    def _extract_keywords(self, text: str, category: str) -> List[str]:
-        """Extract relevant keywords from article text"""
-        keywords = []
-        category_keywords = SEARCH_KEYWORDS.get(category, [])
-        
-        text_lower = text.lower()
-        for keyword in category_keywords:
-            if keyword.lower() in text_lower:
-                keywords.append(keyword)
-        
-        return keywords
 
 
 class NewsAggregator:

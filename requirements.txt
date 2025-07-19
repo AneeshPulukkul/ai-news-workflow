@@ -5,6 +5,13 @@ langchain==0.3.26
 langchain-openai==0.3.28
 openai==1.97.0
 
+# Responsible AI and guardrails
+presidio-analyzer==2.2.351  # For PII detection
+presidio-anonymizer==2.2.351  # For PII anonymization
+perspective-api-client==0.1.0  # For content moderation
+fairlearn==0.9.1  # For bias detection and mitigation
+ray[serve]==2.7.1  # For model serving with guardrails
+
 # Web scraping
 beautifulsoup4==4.13.4
 requests==2.32.4
@@ -18,8 +25,11 @@ pandas==2.2.3
 numpy==2.3.1
 python-dateutil==2.9.0.post0
 
-# Configuration and utilities
-python-dotenv==1.1.1
+# Console UI
+rich==13.7.1
+
+# Environment variables
+python-dotenv==1.0.1
 schedule==1.2.2
 pydantic==2.11.7
 

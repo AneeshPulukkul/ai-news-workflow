@@ -4,338 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agentic News Workflow - Content Review</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background-color: #f8f9fa;
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #e1e4e8;
-        }
-
-        h1, h2, h3 {
-            margin-bottom: 15px;
-            color: #24292e;
-        }
-
-        .tab-container {
-            margin-bottom: 20px;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .tab {
-            padding: 10px 20px;
-            background-color: #eee;
-            border-radius: 5px 5px 0 0;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            border-bottom: none;
-        }
-
-        .tab.active {
-            background-color: #fff;
-            border-bottom: 1px solid #fff;
-            margin-bottom: -1px;
-            font-weight: bold;
-        }
-
-        .tab-content {
-            display: none;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .content-card {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .article-title {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-            color: #0366d6;
-        }
-
-        .article-meta {
-            font-size: 0.9rem;
-            color: #586069;
-            margin-bottom: 15px;
-        }
-
-        .article-content {
-            margin-bottom: 20px;
-            line-height: 1.7;
-        }
-
-        .article-keywords {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 15px;
-        }
-
-        .keyword {
-            background-color: #e1e4e8;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-        }
-
-        .article-source {
-            font-style: italic;
-            margin-bottom: 15px;
-        }
-
-        .source-articles {
-            margin-top: 15px;
-            padding-top: 15px;
-            border-top: 1px solid #e1e4e8;
-        }
-
-        .source-article {
-            margin-bottom: 10px;
-            padding: 10px;
-            background-color: #f6f8fa;
-            border-radius: 3px;
-        }
-
-        .feedback-form {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid #e1e4e8;
-        }
-
-        textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 3px;
-            margin-bottom: 10px;
-            font-family: inherit;
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .approve-btn {
-            background-color: #2ea44f;
-            color: white;
-        }
-
-        .reject-btn {
-            background-color: #cb2431;
-            color: white;
-        }
-
-        .post-card {
-            background-color: #fff;
-            border-radius: 5px;
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .post-platform {
-            display: inline-block;
-            background-color: #0366d6;
-            color: white;
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            margin-bottom: 10px;
-        }
-
-        .post-content {
-            margin-bottom: 10px;
-            line-height: 1.5;
-        }
-
-        .post-hashtags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-
-        .hashtag {
-            color: #0366d6;
-            font-weight: bold;
-        }
-
-        .post-article {
-            font-style: italic;
-            color: #586069;
-            margin-bottom: 10px;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 20px;
-            font-style: italic;
-            color: #586069;
-        }
-
-        .no-content {
-            text-align: center;
-            padding: 40px 20px;
-            font-style: italic;
-            color: #586069;
-        }
-
-        /* Dialog */
-        .dialog-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .dialog {
-            background-color: white;
-            padding: 20px;
-            border-radius: 5px;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .dialog h2 {
-            margin-top: 0;
-        }
-
-        .dialog-content {
-            margin-bottom: 20px;
-        }
-
-        .dialog-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .refresh-button {
-            background-color: #0366d6;
-            color: white;
-            padding: 8px 16px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .pagination button {
-            background-color: #0366d6;
-            color: white;
-        }
-
-        .pagination button:disabled {
-            background-color: #e1e4e8;
-            color: #586069;
-            cursor: not-allowed;
-        }
-
-        /* Statistics */
-        .stats-section {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .stats-card {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .stats-card h3 {
-            margin-top: 0;
-            border-bottom: 1px solid #e1e4e8;
-            padding-bottom: 10px;
-        }
-
-        .stats-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 5px 0;
-            border-bottom: 1px solid #f5f5f5;
-        }
-
-        .stats-title {
-            font-weight: bold;
-        }
-
-        .error-message {
-            background-color: #ffebe9;
-            color: #cb2431;
-            padding: 10px;
-            border-radius: 3px;
-            margin-bottom: 15px;
-            display: none;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Agentic News Workflow - Content Review</h1>
+            <h1>📰 Agentic News Review</h1>
             <button id="refreshButton" class="refresh-button">Refresh Content</button>
         </header>
 
@@ -350,45 +24,27 @@
 
             <!-- Articles Tab -->
             <div id="articlesTab" class="tab-content active">
-                <div id="articlesContainer">
-                    <div class="loading">Loading articles...</div>
-                </div>
+                <div id="articlesContainer"></div>
                 <div class="pagination">
                     <button id="prevArticlesBtn" disabled>Previous</button>
+                    <span id="articlesPageInfo"></span>
                     <button id="nextArticlesBtn" disabled>Next</button>
                 </div>
             </div>
 
             <!-- Posts Tab -->
             <div id="postsTab" class="tab-content">
-                <div id="postsContainer">
-                    <div class="loading">Loading posts...</div>
-                </div>
+                <div id="postsContainer"></div>
                 <div class="pagination">
                     <button id="prevPostsBtn" disabled>Previous</button>
+                    <span id="postsPageInfo"></span>
                     <button id="nextPostsBtn" disabled>Next</button>
                 </div>
             </div>
 
             <!-- Stats Tab -->
             <div id="statsTab" class="tab-content">
-                <div id="statsContainer" class="stats-section">
-                    <div class="loading">Loading statistics...</div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dialog -->
-    <div id="dialogOverlay" class="dialog-overlay">
-        <div class="dialog">
-            <h2 id="dialogTitle">Confirmation</h2>
-            <div id="dialogContent" class="dialog-content">
-                Are you sure you want to proceed?
-            </div>
-            <div class="dialog-buttons">
-                <button id="dialogCancelBtn">Cancel</button>
-                <button id="dialogConfirmBtn">Confirm</button>
+                <div id="statsContainer" class="stats-section"></div>
             </div>
         </div>
     </div>
@@ -402,10 +58,6 @@
             articlesPage: 0,
             postsPage: 0,
             itemsPerPage: 5,
-            currentArticleId: null,
-            currentPostId: null,
-            dialogAction: null,
-            dialogFeedback: ''
         };
 
         // DOM elements
@@ -416,513 +68,262 @@
         const statsContainer = document.getElementById('statsContainer');
         const errorMessage = document.getElementById('errorMessage');
         const refreshButton = document.getElementById('refreshButton');
+        
         const prevArticlesBtn = document.getElementById('prevArticlesBtn');
         const nextArticlesBtn = document.getElementById('nextArticlesBtn');
+        const articlesPageInfo = document.getElementById('articlesPageInfo');
+
         const prevPostsBtn = document.getElementById('prevPostsBtn');
         const nextPostsBtn = document.getElementById('nextPostsBtn');
-        const dialogOverlay = document.getElementById('dialogOverlay');
-        const dialogTitle = document.getElementById('dialogTitle');
-        const dialogContent = document.getElementById('dialogContent');
-        const dialogCancelBtn = document.getElementById('dialogCancelBtn');
-        const dialogConfirmBtn = document.getElementById('dialogConfirmBtn');
+        const postsPageInfo = document.getElementById('postsPageInfo');
 
-        // Tab switching
+        // --- Utility Functions ---
+        const showElement = (el) => el.style.display = 'block';
+        const hideElement = (el) => el.style.display = 'none';
+        const showError = (message) => {
+            errorMessage.textContent = `An error occurred: ${message}`;
+            showElement(errorMessage);
+        };
+        const hideError = () => hideElement(errorMessage);
+
+        // --- API Functions ---
+        async function fetchAPI(url) {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (!data.success) throw new Error(data.error || 'API returned an error');
+            return data.data;
+        }
+
+        async function postAPI(url, body) {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            const data = await response.json();
+            if (!data.success) throw new Error(data.error || 'API returned an error');
+            return data;
+        }
+
+        // --- Data Loading ---
+        async function loadPendingContent() {
+            setLoadingState(true);
+            hideError();
+            try {
+                const data = await fetchAPI('/api/content/pending');
+                state.articles = data.articles || [];
+                state.posts = data.posts || [];
+                state.articlesPage = 0;
+                state.postsPage = 0;
+                render();
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                setLoadingState(false);
+            }
+        }
+
+        async function loadStatistics() {
+            statsContainer.innerHTML = '<div class="loading">Loading statistics...</div>';
+            try {
+                const data = await fetchAPI('/api/content/stats');
+                state.stats = data || {};
+                renderStats();
+            } catch (error) {
+                showError(error.message);
+                statsContainer.innerHTML = '<div class="no-content">Failed to load statistics.</div>';
+            }
+        }
+
+        // --- Rendering ---
+        function render() {
+            renderArticles();
+            renderPosts();
+            updatePagination('articles');
+            updatePagination('posts');
+        }
+
+        function renderArticles() {
+            articlesContainer.innerHTML = '';
+            if (state.articles.length === 0) {
+                articlesContainer.innerHTML = '<div class="no-content">No pending articles to review.</div>';
+                return;
+            }
+            const paginatedArticles = state.articles.slice(
+                state.articlesPage * state.itemsPerPage,
+                (state.articlesPage + 1) * state.itemsPerPage
+            );
+            paginatedArticles.forEach(article => articlesContainer.appendChild(createArticleCard(article)));
+        }
+
+        function renderPosts() {
+            postsContainer.innerHTML = '';
+            if (state.posts.length === 0) {
+                postsContainer.innerHTML = '<div class="no-content">No pending social media posts to review.</div>';
+                return;
+            }
+            const paginatedPosts = state.posts.slice(
+                state.postsPage * state.itemsPerPage,
+                (state.postsPage + 1) * state.itemsPerPage
+            );
+            paginatedPosts.forEach(post => postsContainer.appendChild(createPostCard(post)));
+        }
+
+        function renderStats() {
+            statsContainer.innerHTML = '';
+            if (Object.keys(state.stats).length === 0) {
+                statsContainer.innerHTML = '<div class="no-content">No statistics available.</div>';
+                return;
+            }
+            statsContainer.appendChild(createStatsCard('Article Stats', state.stats.articles));
+            statsContainer.appendChild(createStatsCard('Post Stats', state.stats.posts));
+            statsContainer.appendChild(createStatsCard('Articles by Source', state.stats.sources));
+        }
+
+        // --- Component Creation ---
+        function createArticleCard(article) {
+            const card = document.createElement('div');
+            card.className = 'content-card';
+            card.innerHTML = `
+                <h2 class="article-title">${article.title}</h2>
+                <div class="article-meta">
+                    <span><strong>Category:</strong> ${article.category}</span>
+                    <span><strong>Generated:</strong> ${new Date(article.generated_date).toLocaleString()}</span>
+                </div>
+                <div class="article-keywords">${(article.keywords || []).map(k => `<span class="keyword">${k}</span>`).join('')}</div>
+                <div class="article-content">${article.content.replace(/\n/g, '<br>')}</div>
+                <div class="source-articles">
+                    <h3>Source Articles</h3>
+                    ${(article.source_articles || []).map(src => `<div class="source-article"><a href="${src.url}" target="_blank">${src.title}</a></div>`).join('')}
+                </div>
+                <div class="feedback-form">
+                    <textarea placeholder="Provide feedback for rejection (optional)"></textarea>
+                    <div class="button-group">
+                        <button class="approve-btn">Approve</button>
+                        <button class="reject-btn">Reject</button>
+                    </div>
+                </div>
+            `;
+            card.querySelector('.approve-btn').addEventListener('click', () => handleApproval('article', article.id, 'approved', card));
+            card.querySelector('.reject-btn').addEventListener('click', () => handleApproval('article', article.id, 'rejected', card));
+            return card;
+        }
+
+        function createPostCard(post) {
+            const card = document.createElement('div');
+            card.className = 'post-card';
+            card.innerHTML = `
+                <div class="post-platform">${post.platform}</div>
+                <div class="post-content">${post.content.replace(/\n/g, '<br>')}</div>
+                <div class="post-hashtags">${(post.hashtags || []).map(h => `<span class="hashtag">${h}</span>`).join('')}</div>
+                <div class="feedback-form">
+                    <textarea placeholder="Provide feedback for rejection (optional)"></textarea>
+                    <div class="button-group">
+                        <button class="approve-btn">Approve</button>
+                        <button class="reject-btn">Reject</button>
+                    </div>
+                </div>
+            `;
+            card.querySelector('.approve-btn').addEventListener('click', () => handleApproval('post', post.id, 'approved', card));
+            card.querySelector('.reject-btn').addEventListener('click', () => handleApproval('post', post.id, 'rejected', card));
+            return card;
+        }
+
+        function createStatsCard(title, data) {
+            const card = document.createElement('div');
+            card.className = 'stats-card';
+            let items = '';
+            if (data) {
+                for (const [key, value] of Object.entries(data)) {
+                    items += `<div class="stats-item"><span class="stats-title">${key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}</span><span>${value}</span></div>`;
+                }
+            }
+            card.innerHTML = `<h3>${title}</h3>${items}`;
+            return card;
+        }
+
+        // --- Event Handlers ---
         tabs.forEach(tab => {
             tab.addEventListener('click', () => {
-                // Remove active class from all tabs and contents
                 tabs.forEach(t => t.classList.remove('active'));
                 tabContents.forEach(c => c.classList.remove('active'));
-                
-                // Add active class to selected tab and content
                 tab.classList.add('active');
-                const tabName = tab.getAttribute('data-tab');
+                const tabName = tab.dataset.tab;
                 document.getElementById(`${tabName}Tab`).classList.add('active');
-                
-                // Load data if needed
                 if (tabName === 'stats' && Object.keys(state.stats).length === 0) {
                     loadStatistics();
                 }
             });
         });
 
-        // Initial data loading
-        document.addEventListener('DOMContentLoaded', () => {
-            loadPendingContent();
-        });
+        refreshButton.addEventListener('click', loadPendingContent);
 
-        // Refresh button
-        refreshButton.addEventListener('click', () => {
-            loadPendingContent();
-        });
-
-        // Load pending content
-        async function loadPendingContent() {
+        async function handleApproval(type, id, status, cardElement) {
+            const feedback = cardElement.querySelector('textarea').value;
+            const url = `/api/content/${type}s/${id}/${status}`;
             try {
+                await postAPI(url, { feedback });
+                cardElement.style.opacity = '0.5';
+                cardElement.querySelectorAll('button, textarea').forEach(el => el.disabled = true);
+                // Optionally remove from list after a delay
+                setTimeout(() => {
+                    if (type === 'article') {
+                        state.articles = state.articles.filter(a => a.id !== id);
+                    } else {
+                        state.posts = state.posts.filter(p => p.id !== id);
+                    }
+                    render();
+                }, 1000);
+            } catch (error) {
+                showError(`Failed to ${status} ${type}: ${error.message}`);
+            }
+        }
+
+        // --- Pagination ---
+        function updatePagination(type) {
+            const page = state[`${type}Page`];
+            const items = state[type];
+            const totalPages = Math.ceil(items.length / state.itemsPerPage);
+            
+            const prevBtn = document.getElementById(`prev${type.charAt(0).toUpperCase() + type.slice(1)}Btn`);
+            const nextBtn = document.getElementById(`next${type.charAt(0).toUpperCase() + type.slice(1)}Btn`);
+            const pageInfo = document.getElementById(`${type}PageInfo`);
+
+            prevBtn.disabled = page === 0;
+            nextBtn.disabled = page >= totalPages - 1;
+            pageInfo.textContent = `Page ${page + 1} of ${totalPages || 1}`;
+        }
+
+        function changePage(type, direction) {
+            const totalPages = Math.ceil(state[type].length / state.itemsPerPage);
+            state[`${type}Page`] += direction;
+            if (state[`${type}Page`] < 0) state[`${type}Page`] = 0;
+            if (state[`${type}Page`] >= totalPages) state[`${type}Page`] = totalPages - 1;
+            render();
+        }
+
+        prevArticlesBtn.addEventListener('click', () => changePage('articles', -1));
+        nextArticlesBtn.addEventListener('click', () => changePage('articles', 1));
+        prevPostsBtn.addEventListener('click', () => changePage('posts', -1));
+        nextPostsBtn.addEventListener('click', () => changePage('posts', 1));
+
+        // --- Loading State ---
+        function setLoadingState(isLoading) {
+            refreshButton.disabled = isLoading;
+            if (isLoading) {
+                refreshButton.textContent = 'Refreshing...';
                 articlesContainer.innerHTML = '<div class="loading">Loading articles...</div>';
                 postsContainer.innerHTML = '<div class="loading">Loading posts...</div>';
-                
-                const response = await fetch('/api/content/pending');
-                if (!response.ok) throw new Error('Failed to load content');
-                
-                const data = await response.json();
-                if (!data.success) throw new Error(data.error || 'Unknown error');
-                
-                state.articles = data.data.articles || [];
-                state.posts = data.data.posts || [];
-                
-                // Reset pagination
-                state.articlesPage = 0;
-                state.postsPage = 0;
-                
-                renderArticles();
-                renderPosts();
-                updatePagination();
-                
-                hideError();
-            } catch (error) {
-                showError(error.message);
-                articlesContainer.innerHTML = '<div class="no-content">Failed to load content. Please try again.</div>';
-                postsContainer.innerHTML = '<div class="no-content">Failed to load content. Please try again.</div>';
+            } else {
+                refreshButton.textContent = 'Refresh Content';
             }
         }
 
-        // Load statistics
-        async function loadStatistics() {
-            try {
-                statsContainer.innerHTML = '<div class="loading">Loading statistics...</div>';
-                
-                const response = await fetch('/api/content/stats');
-                if (!response.ok) throw new Error('Failed to load statistics');
-                
-                const data = await response.json();
-                if (!data.success) throw new Error(data.error || 'Unknown error');
-                
-                state.stats = data.data || {};
-                
-                renderStatistics();
-                hideError();
-            } catch (error) {
-                showError(error.message);
-                statsContainer.innerHTML = '<div class="no-content">Failed to load statistics. Please try again.</div>';
-            }
-        }
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', loadPendingContent);
 
-        // Render articles
-        function renderArticles() {
-            if (state.articles.length === 0) {
-                articlesContainer.innerHTML = '<div class="no-content">No pending articles to review</div>';
-                return;
-            }
-            
-            const start = state.articlesPage * state.itemsPerPage;
-            const end = Math.min(start + state.itemsPerPage, state.articles.length);
-            const pageArticles = state.articles.slice(start, end);
-            
-            let html = '';
-            pageArticles.forEach(article => {
-                const sourceArticlesHtml = article.source_articles && article.source_articles.length > 0 
-                    ? `
-                        <div class="source-articles">
-                            <h3>Source Articles (${article.source_articles.length}):</h3>
-                            ${article.source_articles.map(source => `
-                                <div class="source-article">
-                                    <div><strong>${source.title}</strong></div>
-                                    <div><a href="${source.url}" target="_blank">${source.url}</a></div>
-                                    <div>Source: ${source.source}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    ` 
-                    : '';
-                
-                html += `
-                    <div class="content-card" data-id="${article.id}">
-                        <h2 class="article-title">${article.title}</h2>
-                        <div class="article-meta">
-                            <span>Category: ${article.category}</span> | 
-                            <span>Generated: ${new Date(article.created_at).toLocaleString()}</span>
-                        </div>
-                        <div class="article-keywords">
-                            ${article.keywords.map(keyword => `<span class="keyword">${keyword}</span>`).join('')}
-                        </div>
-                        <div class="article-content">${article.content.replace(/\n/g, '<br>')}</div>
-                        ${sourceArticlesHtml}
-                        <div class="feedback-form">
-                            <h3>Review</h3>
-                            <textarea class="feedback-text" placeholder="Enter feedback or comments (optional)">${article.user_feedback || ''}</textarea>
-                            <div class="button-group">
-                                <button class="approve-btn" data-id="${article.id}">Approve</button>
-                                <button class="reject-btn" data-id="${article.id}">Reject</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            articlesContainer.innerHTML = html;
-            
-            // Add event listeners for approval/rejection
-            document.querySelectorAll('.approve-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const articleId = parseInt(btn.getAttribute('data-id'));
-                    const card = btn.closest('.content-card');
-                    const feedback = card.querySelector('.feedback-text').value;
-                    showConfirmDialog('Approve Article', 'Are you sure you want to approve this article?', () => {
-                        approveArticle(articleId, feedback);
-                    });
-                });
-            });
-            
-            document.querySelectorAll('.reject-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const articleId = parseInt(btn.getAttribute('data-id'));
-                    const card = btn.closest('.content-card');
-                    const feedback = card.querySelector('.feedback-text').value;
-                    showConfirmDialog('Reject Article', 'Are you sure you want to reject this article?', () => {
-                        rejectArticle(articleId, feedback);
-                    });
-                });
-            });
-        }
-
-        // Render posts
-        function renderPosts() {
-            if (state.posts.length === 0) {
-                postsContainer.innerHTML = '<div class="no-content">No pending posts to review</div>';
-                return;
-            }
-            
-            const start = state.postsPage * state.itemsPerPage;
-            const end = Math.min(start + state.itemsPerPage, state.posts.length);
-            const pagePosts = state.posts.slice(start, end);
-            
-            let html = '';
-            pagePosts.forEach(post => {
-                html += `
-                    <div class="post-card" data-id="${post.id}">
-                        <div class="post-platform">${post.platform}</div>
-                        <div class="post-content">${post.content.replace(/\n/g, '<br>')}</div>
-                        <div class="post-hashtags">
-                            ${post.hashtags.map(tag => `<span class="hashtag">#${tag}</span>`).join(' ')}
-                        </div>
-                        <div class="post-article">Based on: ${post.article_title}</div>
-                        <div class="feedback-form">
-                            <h3>Review</h3>
-                            <textarea class="feedback-text" placeholder="Enter feedback or comments (optional)">${post.user_feedback || ''}</textarea>
-                            <div class="button-group">
-                                <button class="approve-btn" data-id="${post.id}">Approve</button>
-                                <button class="reject-btn" data-id="${post.id}">Reject</button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            postsContainer.innerHTML = html;
-            
-            // Add event listeners for approval/rejection
-            document.querySelectorAll('#postsTab .approve-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const postId = parseInt(btn.getAttribute('data-id'));
-                    const card = btn.closest('.post-card');
-                    const feedback = card.querySelector('.feedback-text').value;
-                    showConfirmDialog('Approve Post', 'Are you sure you want to approve this post?', () => {
-                        approvePost(postId, feedback);
-                    });
-                });
-            });
-            
-            document.querySelectorAll('#postsTab .reject-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const postId = parseInt(btn.getAttribute('data-id'));
-                    const card = btn.closest('.post-card');
-                    const feedback = card.querySelector('.feedback-text').value;
-                    showConfirmDialog('Reject Post', 'Are you sure you want to reject this post?', () => {
-                        rejectPost(postId, feedback);
-                    });
-                });
-            });
-        }
-
-        // Render statistics
-        function renderStatistics() {
-            let html = '';
-            
-            // Articles stats
-            if (state.stats.articles) {
-                html += `
-                    <div class="stats-card">
-                        <h3>Articles</h3>
-                        <div class="stats-item">
-                            <span class="stats-title">Total Generated:</span>
-                            <span>${state.stats.articles.total || 0}</span>
-                        </div>
-                        <div class="stats-item">
-                            <span class="stats-title">Approved:</span>
-                            <span>${state.stats.articles.approved || 0}</span>
-                        </div>
-                        <div class="stats-item">
-                            <span class="stats-title">Rejected:</span>
-                            <span>${state.stats.articles.rejected || 0}</span>
-                        </div>
-                        <div class="stats-item">
-                            <span class="stats-title">Pending:</span>
-                            <span>${state.stats.articles.pending || 0}</span>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Posts stats
-            if (state.stats.posts) {
-                html += `
-                    <div class="stats-card">
-                        <h3>Social Media Posts</h3>
-                        <div class="stats-item">
-                            <span class="stats-title">Total Generated:</span>
-                            <span>${state.stats.posts.total || 0}</span>
-                        </div>
-                        <div class="stats-item">
-                            <span class="stats-title">Approved:</span>
-                            <span>${state.stats.posts.approved || 0}</span>
-                        </div>
-                        <div class="stats-item">
-                            <span class="stats-title">Rejected:</span>
-                            <span>${state.stats.posts.rejected || 0}</span>
-                        </div>
-                        <div class="stats-item">
-                            <span class="stats-title">Pending:</span>
-                            <span>${state.stats.posts.pending || 0}</span>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            // Sources stats
-            if (state.stats.sources) {
-                html += `
-                    <div class="stats-card">
-                        <h3>News Sources</h3>
-                        ${Object.entries(state.stats.sources).map(([source, count]) => `
-                            <div class="stats-item">
-                                <span class="stats-title">${source}:</span>
-                                <span>${count}</span>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            }
-            
-            statsContainer.innerHTML = html || '<div class="no-content">No statistics available</div>';
-        }
-
-        // Update pagination
-        function updatePagination() {
-            // Articles pagination
-            const totalArticlesPages = Math.ceil(state.articles.length / state.itemsPerPage);
-            prevArticlesBtn.disabled = state.articlesPage === 0;
-            nextArticlesBtn.disabled = state.articlesPage >= totalArticlesPages - 1 || totalArticlesPages === 0;
-            
-            prevArticlesBtn.onclick = () => {
-                if (state.articlesPage > 0) {
-                    state.articlesPage--;
-                    renderArticles();
-                    updatePagination();
-                }
-            };
-            
-            nextArticlesBtn.onclick = () => {
-                if (state.articlesPage < totalArticlesPages - 1) {
-                    state.articlesPage++;
-                    renderArticles();
-                    updatePagination();
-                }
-            };
-            
-            // Posts pagination
-            const totalPostsPages = Math.ceil(state.posts.length / state.itemsPerPage);
-            prevPostsBtn.disabled = state.postsPage === 0;
-            nextPostsBtn.disabled = state.postsPage >= totalPostsPages - 1 || totalPostsPages === 0;
-            
-            prevPostsBtn.onclick = () => {
-                if (state.postsPage > 0) {
-                    state.postsPage--;
-                    renderPosts();
-                    updatePagination();
-                }
-            };
-            
-            nextPostsBtn.onclick = () => {
-                if (state.postsPage < totalPostsPages - 1) {
-                    state.postsPage++;
-                    renderPosts();
-                    updatePagination();
-                }
-            };
-        }
-
-        // Approve article
-        async function approveArticle(articleId, feedback) {
-            try {
-                const response = await fetch(`/api/content/articles/${articleId}/approve`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ feedback })
-                });
-                
-                if (!response.ok) throw new Error('Failed to approve article');
-                
-                const data = await response.json();
-                if (!data.success) throw new Error(data.error || 'Unknown error');
-                
-                // Remove the article from the list
-                state.articles = state.articles.filter(article => article.id !== articleId);
-                
-                // Refresh the display
-                renderArticles();
-                updatePagination();
-                
-                // Show success message
-                showSuccess('Article approved successfully');
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        // Reject article
-        async function rejectArticle(articleId, feedback) {
-            try {
-                const response = await fetch(`/api/content/articles/${articleId}/reject`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ feedback })
-                });
-                
-                if (!response.ok) throw new Error('Failed to reject article');
-                
-                const data = await response.json();
-                if (!data.success) throw new Error(data.error || 'Unknown error');
-                
-                // Remove the article from the list
-                state.articles = state.articles.filter(article => article.id !== articleId);
-                
-                // Refresh the display
-                renderArticles();
-                updatePagination();
-                
-                // Show success message
-                showSuccess('Article rejected successfully');
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        // Approve post
-        async function approvePost(postId, feedback) {
-            try {
-                const response = await fetch(`/api/content/posts/${postId}/approve`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ feedback })
-                });
-                
-                if (!response.ok) throw new Error('Failed to approve post');
-                
-                const data = await response.json();
-                if (!data.success) throw new Error(data.error || 'Unknown error');
-                
-                // Remove the post from the list
-                state.posts = state.posts.filter(post => post.id !== postId);
-                
-                // Refresh the display
-                renderPosts();
-                updatePagination();
-                
-                // Show success message
-                showSuccess('Post approved successfully');
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        // Reject post
-        async function rejectPost(postId, feedback) {
-            try {
-                const response = await fetch(`/api/content/posts/${postId}/reject`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ feedback })
-                });
-                
-                if (!response.ok) throw new Error('Failed to reject post');
-                
-                const data = await response.json();
-                if (!data.success) throw new Error(data.error || 'Unknown error');
-                
-                // Remove the post from the list
-                state.posts = state.posts.filter(post => post.id !== postId);
-                
-                // Refresh the display
-                renderPosts();
-                updatePagination();
-                
-                // Show success message
-                showSuccess('Post rejected successfully');
-            } catch (error) {
-                showError(error.message);
-            }
-        }
-
-        // Show error message
-        function showError(message) {
-            errorMessage.textContent = `Error: ${message}`;
-            errorMessage.style.display = 'block';
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-            }, 5000);
-        }
-
-        // Hide error message
-        function hideError() {
-            errorMessage.style.display = 'none';
-        }
-
-        // Show success message
-        function showSuccess(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.backgroundColor = '#e6ffed';
-            errorMessage.style.color = '#28a745';
-            errorMessage.style.display = 'block';
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-                errorMessage.style.backgroundColor = '#ffebe9';
-                errorMessage.style.color = '#cb2431';
-            }, 3000);
-        }
-
-        // Show confirmation dialog
-        function showConfirmDialog(title, message, onConfirm) {
-            dialogTitle.textContent = title;
-            dialogContent.textContent = message;
-            dialogOverlay.style.display = 'flex';
-            
-            dialogConfirmBtn.onclick = () => {
-                onConfirm();
-                dialogOverlay.style.display = 'none';
-            };
-            
-            dialogCancelBtn.onclick = () => {
-                dialogOverlay.style.display = 'none';
-            };
-        }
     </script>
 </body>
 </html>

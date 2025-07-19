@@ -27,3 +27,209 @@ AttributeError: 'ContentDatabase' object has no attribute 'get_article_stats'
 2025-07-19 12:35:14,643 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 12:35:14] "[35m[1mGET /api/content/stats HTTP/1.1[0m" 500 -
 2025-07-19 12:35:17,880 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
 2025-07-19 12:35:17,880 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 12:35:17] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:13:31,545 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:13:31,547 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:13:31,551 - review_interface - INFO - Review interface app created
+2025-07-19 14:13:31,552 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:13:31,701 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.104:5000
+2025-07-19 14:13:31,702 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-19 14:13:31,705 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 14:13:35,117 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:13:35,121 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:13:35,128 - review_interface - INFO - Review interface app created
+2025-07-19 14:13:35,128 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:13:35,161 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 14:13:35,167 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 14:13:53,167 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:13:53] "GET / HTTP/1.1" 200 -
+2025-07-19 14:13:53,231 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:13:53] "GET /styles.css HTTP/1.1" 200 -
+2025-07-19 14:13:53,319 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:13:53,324 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:13:53] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:13:53,343 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:13:53] "GET /favicon.ico HTTP/1.1" 200 -
+2025-07-19 14:13:58,613 - review_interface.routes - ERROR - Failed to get statistics: 'ContentDatabase' object has no attribute 'get_article_stats'
+Traceback (most recent call last):
+  File "C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\review_interface\routes\__init__.py", line 195, in get_statistics
+    article_stats = content_db.get_article_stats()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ContentDatabase' object has no attribute 'get_article_stats'
+2025-07-19 14:13:58,630 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:13:58] "[35m[1mGET /api/content/stats HTTP/1.1[0m" 500 -
+2025-07-19 14:14:03,064 - review_interface.routes - ERROR - Failed to get statistics: 'ContentDatabase' object has no attribute 'get_article_stats'
+Traceback (most recent call last):
+  File "C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\review_interface\routes\__init__.py", line 195, in get_statistics
+    article_stats = content_db.get_article_stats()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ContentDatabase' object has no attribute 'get_article_stats'
+2025-07-19 14:14:03,068 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:14:03] "[35m[1mGET /api/content/stats HTTP/1.1[0m" 500 -
+2025-07-19 14:14:07,577 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:14:07] "[36mGET / HTTP/1.1[0m" 304 -
+2025-07-19 14:14:07,636 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:14:07] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-07-19 14:14:07,673 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:14:07,674 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:14:07] "[36mGET /favicon.ico HTTP/1.1[0m" 304 -
+2025-07-19 14:14:07,677 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:14:07] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:14:10,045 - review_interface.routes - ERROR - Failed to get statistics: 'ContentDatabase' object has no attribute 'get_article_stats'
+Traceback (most recent call last):
+  File "C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\review_interface\routes\__init__.py", line 195, in get_statistics
+    article_stats = content_db.get_article_stats()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ContentDatabase' object has no attribute 'get_article_stats'
+2025-07-19 14:14:10,047 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:14:10] "[35m[1mGET /api/content/stats HTTP/1.1[0m" 500 -
+2025-07-19 14:16:12,708 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\content_generator.py', reloading
+2025-07-19 14:16:12,913 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 14:16:16,705 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:16:16,708 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:16:16,712 - review_interface - INFO - Review interface app created
+2025-07-19 14:16:16,713 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:16:16,733 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 14:16:16,738 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 14:16:31,985 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:16:31] "[36mGET / HTTP/1.1[0m" 304 -
+2025-07-19 14:16:32,018 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:16:32] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-07-19 14:16:32,032 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:16:32,032 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:16:32] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:16:32,053 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:16:32] "[36mGET /favicon.ico HTTP/1.1[0m" 304 -
+2025-07-19 14:16:33,524 - review_interface.routes - ERROR - Failed to get statistics: 'ContentDatabase' object has no attribute 'get_article_stats'
+Traceback (most recent call last):
+  File "C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\review_interface\routes\__init__.py", line 195, in get_statistics
+    article_stats = content_db.get_article_stats()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ContentDatabase' object has no attribute 'get_article_stats'
+2025-07-19 14:16:33,526 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:16:33] "[35m[1mGET /api/content/stats HTTP/1.1[0m" 500 -
+2025-07-19 14:16:52,116 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:16:52,118 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:16:52,122 - review_interface - INFO - Review interface app created
+2025-07-19 14:16:52,122 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:16:52,155 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.104:5000
+2025-07-19 14:16:52,156 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-19 14:16:52,159 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 14:16:54,930 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:16:54,931 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:16:54,935 - review_interface - INFO - Review interface app created
+2025-07-19 14:16:54,936 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:16:54,958 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 14:16:54,962 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 14:17:29,399 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:17:29] "[36mGET / HTTP/1.1[0m" 304 -
+2025-07-19 14:17:29,442 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:17:29] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-07-19 14:17:29,513 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:17:29,514 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:17:29] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:17:29,542 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:17:29] "[36mGET /favicon.ico HTTP/1.1[0m" 304 -
+2025-07-19 14:17:33,019 - review_interface.routes - ERROR - Failed to get statistics: 'ContentDatabase' object has no attribute 'get_article_stats'
+Traceback (most recent call last):
+  File "C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\review_interface\routes\__init__.py", line 195, in get_statistics
+    article_stats = content_db.get_article_stats()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ContentDatabase' object has no attribute 'get_article_stats'
+2025-07-19 14:17:33,020 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:17:33] "[35m[1mGET /api/content/stats HTTP/1.1[0m" 500 -
+2025-07-19 14:19:16,130 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:19:16,132 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:19:16,136 - review_interface - INFO - Review interface app created
+2025-07-19 14:19:16,137 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:19:16,170 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://192.168.0.104:5000
+2025-07-19 14:19:16,171 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-07-19 14:19:16,175 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 14:19:19,077 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:19:19,078 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:19:19,083 - review_interface - INFO - Review interface app created
+2025-07-19 14:19:19,083 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:19:19,103 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 14:19:19,107 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 14:19:26,105 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:26] "[36mGET / HTTP/1.1[0m" 304 -
+2025-07-19 14:19:26,167 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:26] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-07-19 14:19:26,270 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:19:26,272 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:26] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:19:26,300 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:26] "[36mGET /favicon.ico HTTP/1.1[0m" 304 -
+2025-07-19 14:19:28,287 - review_interface.routes - ERROR - Failed to get statistics: 'ContentDatabase' object has no attribute 'get_article_stats'
+Traceback (most recent call last):
+  File "C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\review_interface\routes\__init__.py", line 195, in get_statistics
+    article_stats = content_db.get_article_stats()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ContentDatabase' object has no attribute 'get_article_stats'
+2025-07-19 14:19:28,289 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:28] "[35m[1mGET /api/content/stats HTTP/1.1[0m" 500 -
+2025-07-19 14:19:30,641 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:19:30,642 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:30] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:19:31,733 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:19:31,735 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:31] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:19:34,726 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:19:34,727 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:34] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:19:35,980 - review_interface.routes - ERROR - Failed to get statistics: 'ContentDatabase' object has no attribute 'get_article_stats'
+Traceback (most recent call last):
+  File "C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\review_interface\routes\__init__.py", line 195, in get_statistics
+    article_stats = content_db.get_article_stats()
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'ContentDatabase' object has no attribute 'get_article_stats'
+2025-07-19 14:19:35,983 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:35] "[35m[1mGET /api/content/stats HTTP/1.1[0m" 500 -
+2025-07-19 14:19:37,288 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 14:19:37,289 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 14:19:37] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 14:35:28,655 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\tools\\base.py', reloading
+2025-07-19 14:35:28,731 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\tools\\base.py', reloading
+2025-07-19 14:35:28,964 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 14:35:29,006 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 14:35:33,375 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:35:33,377 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:35:33,381 - review_interface - INFO - Review interface app created
+2025-07-19 14:35:33,381 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:35:33,383 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:35:33,384 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:35:33,388 - review_interface - INFO - Review interface app created
+2025-07-19 14:35:33,389 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:35:33,403 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 14:35:33,408 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 14:35:33,415 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 14:37:13,355 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\agents\\news_gathering_agent.py', reloading
+2025-07-19 14:37:13,602 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 14:37:16,255 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 14:37:16,256 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 14:37:16,265 - review_interface - INFO - Review interface app created
+2025-07-19 14:37:16,266 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 14:37:16,290 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 14:37:16,297 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 18:36:52,004 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\workflows\\trend_analysis_workflow.py', reloading
+2025-07-19 18:36:52,706 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 18:37:04,664 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 18:37:04,670 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 18:37:04,689 - review_interface - INFO - Review interface app created
+2025-07-19 18:37:04,691 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 18:37:04,784 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 18:37:04,791 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 18:37:16,323 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\workflows\\fact_checking_workflow.py', reloading
+2025-07-19 18:37:16,958 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 18:37:29,058 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 18:37:29,061 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 18:37:29,074 - review_interface - INFO - Review interface app created
+2025-07-19 18:37:29,077 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 18:37:29,234 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 18:37:29,251 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 18:37:29,591 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 18:37:29] "[36mGET / HTTP/1.1[0m" 304 -
+2025-07-19 18:37:29,683 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 18:37:29] "[36mGET /styles.css HTTP/1.1[0m" 304 -
+2025-07-19 18:37:29,930 - review_interface.routes - INFO - Retrieved 0 pending articles and 0 pending posts
+2025-07-19 18:37:29,972 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 18:37:29] "GET /api/content/pending HTTP/1.1" 200 -
+2025-07-19 18:37:29,976 - werkzeug - INFO - 192.168.0.104 - - [19/Jul/2025 18:37:29] "[36mGET /favicon.ico HTTP/1.1[0m" 304 -
+2025-07-19 18:37:42,524 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\memory\\memory.py', reloading
+2025-07-19 18:37:43,553 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 18:37:54,551 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 18:37:54,556 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 18:37:54,587 - review_interface - INFO - Review interface app created
+2025-07-19 18:37:54,598 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 18:37:54,670 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 18:37:54,682 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 19:05:04,017 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\guardrails\\content_safety_guardrail.py', reloading
+2025-07-19 19:05:04,259 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 19:05:08,326 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 19:05:08,328 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 19:05:08,333 - review_interface - INFO - Review interface app created
+2025-07-19 19:05:08,334 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 19:05:08,353 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 19:05:08,358 - werkzeug - INFO -  * Debugger PIN: 431-464-065
+2025-07-19 19:06:16,429 - werkzeug - INFO -  * Detected change in 'C:\\Users\\Aneesh.Pulukkul\\OneDrive - EY\\Documents\\GitHub\\ai-news-workflow\\guardrails\\guardrail_monitor.py', reloading
+2025-07-19 19:06:16,655 - werkzeug - INFO -  * Restarting with stat
+2025-07-19 19:06:19,930 - content_generator.content_generator - INFO - Content database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\content_database.db
+2025-07-19 19:06:19,932 - scrapers.news_scraper - INFO - Database initialized at C:\Users\Aneesh.Pulukkul\OneDrive - EY\Documents\GitHub\ai-news-workflow\data\news_database.db
+2025-07-19 19:06:19,935 - review_interface - INFO - Review interface app created
+2025-07-19 19:06:19,936 - review_interface - INFO - Starting review interface on port 5000 (debug=True)
+2025-07-19 19:06:19,954 - werkzeug - WARNING -  * Debugger is active!
+2025-07-19 19:06:19,960 - werkzeug - INFO -  * Debugger PIN: 431-464-065

@@ -37,8 +37,6 @@ def create_app():
     
     # Configure app
     app.config['SECRET_KEY'] = REVIEW_CONFIG.get('secret_key', 'dev-secret-key')
-    app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'content.db')}"
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     
     # Enable CORS for all routes
     CORS(app)

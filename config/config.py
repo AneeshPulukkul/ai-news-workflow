@@ -9,7 +9,12 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# News Sources Configuration
+# --- LLM and Content Generation ---
+LLM_PROVIDER = "openai"  # Can be 'openai', 'huggingface', etc.
+PROMPTS_FILE_PATH = os.path.join(os.path.dirname(__file__), "prompts.json")
+
+
+# --- News Sources Configuration ---
 NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
     'technology': [
         {
@@ -17,6 +22,7 @@ NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
             'url': 'https://techcrunch.com/',
             'rss_feed': 'https://techcrunch.com/feed/',
             'selectors': {
+                'article_link': 'a.post-block__title__link',
                 'title': 'h1.article__title',
                 'content': 'div.article-content',
                 'date': 'time.article__date'
@@ -27,6 +33,7 @@ NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
             'url': 'https://arstechnica.com/',
             'rss_feed': 'https://feeds.arstechnica.com/arstechnica/index',
             'selectors': {
+                'article_link': 'a.post-link',
                 'title': 'h1.heading',
                 'content': 'div.article-content',
                 'date': 'time.date'
@@ -37,6 +44,7 @@ NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
             'url': 'https://www.theverge.com/',
             'rss_feed': 'https://www.theverge.com/rss/index.xml',
             'selectors': {
+                'article_link': 'h2 > a[data-analytics-link="article"]',
                 'title': 'h1.duet--article--dangerously-set-cms-markup',
                 'content': 'div.duet--article--article-body-component',
                 'date': 'time.c-byline__item'
@@ -47,6 +55,7 @@ NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
             'url': 'https://www.wired.com/',
             'rss_feed': 'https://www.wired.com/feed/rss',
             'selectors': {
+                'article_link': 'a[href*="/story/"]',
                 'title': 'h1.ContentHeaderHed-NCyCC',
                 'content': 'div.ArticleBodyWrapper',
                 'date': 'time.BaseWrap-sc-gjQpdd'
@@ -59,6 +68,7 @@ NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
             'url': 'https://hbr.org/',
             'rss_feed': 'https://feeds.hbr.org/harvardbusiness',
             'selectors': {
+                'article_link': 'a.stream-article__title',
                 'title': 'h1.article-hed',
                 'content': 'div.article-body',
                 'date': 'time.article-date'
@@ -69,6 +79,7 @@ NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
             'url': 'https://sloanreview.mit.edu/',
             'rss_feed': 'https://sloanreview.mit.edu/feed/',
             'selectors': {
+                'article_link': 'a.article-title-link',
                 'title': 'h1.entry-title',
                 'content': 'div.entry-content',
                 'date': 'time.entry-date'
@@ -79,6 +90,7 @@ NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
             'url': 'https://www.mckinsey.com/insights',
             'rss_feed': 'https://www.mckinsey.com/insights/rss',
             'selectors': {
+                'article_link': 'a.item-title-link',
                 'title': 'h1.article-title',
                 'content': 'div.article-body',
                 'date': 'time.article-date'
@@ -87,7 +99,7 @@ NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
     ]
 }
 
-# News API Configuration
+# --- News API Configuration ---
 NEWS_API_CONFIG: Dict[str, Dict[str, Any]] = {
     'newsapi_org': {
         'api_key': os.getenv('NEWSAPI_ORG_KEY', ''),
