@@ -531,4 +531,4 @@ def optimize_database(self):
 
 This database schema documentation provides a comprehensive guide to the data storage components of the Agentic News Workflow System. By understanding these schemas, developers can effectively query, modify, and extend the system's data storage capabilities to meet evolving requirements.
 
-For further assistance with database operations or schema modifications, consult the SQL documentation or reach out to the development team.
+For further assistance with database operations or schema modifications, consult the SQL documentation or reach out to me.
