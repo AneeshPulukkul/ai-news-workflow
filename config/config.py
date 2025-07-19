@@ -3,13 +3,14 @@ Configuration file for the Agentic News Workflow system
 """
 
 import os
+from typing import Dict, List, Any
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
 load_dotenv()
 
 # News Sources Configuration
-NEWS_SOURCES = {
+NEWS_SOURCES: Dict[str, List[Dict[str, Any]]] = {
     'technology': [
         {
             'name': 'TechCrunch',
@@ -87,7 +88,7 @@ NEWS_SOURCES = {
 }
 
 # News API Configuration
-NEWS_API_CONFIG = {
+NEWS_API_CONFIG: Dict[str, Dict[str, Any]] = {
     'newsapi_org': {
         'api_key': os.getenv('NEWSAPI_ORG_KEY', ''),
         'base_url': 'https://newsapi.org/v2/',
@@ -106,7 +107,7 @@ NEWS_API_CONFIG = {
 }
 
 # Search Keywords for different topics
-SEARCH_KEYWORDS = {
+SEARCH_KEYWORDS: Dict[str, List[str]] = {
     'technology': [
         'artificial intelligence', 'machine learning', 'blockchain', 'cryptocurrency',
         'cloud computing', 'cybersecurity', 'data science', 'software development',
@@ -120,7 +121,7 @@ SEARCH_KEYWORDS = {
 }
 
 # Scraping Configuration
-SCRAPING_CONFIG = {
+SCRAPING_CONFIG: Dict[str, Any] = {
     'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
     'delay_between_requests': 2,  # seconds
     'timeout': 30,  # seconds
@@ -129,9 +130,9 @@ SCRAPING_CONFIG = {
 }
 
 # Database Configuration
-DATABASE_CONFIG = {
+DATABASE_CONFIG: Dict[str, Any] = {
     'type': 'sqlite',  # Can be changed to 'postgresql' or 'mongodb'
-    'sqlite_path': 'data/news_database.db',
+    'sqlite_path': os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'news_database.db'),
     'postgresql': {
         'host': os.getenv('DB_HOST', 'localhost'),
         'port': os.getenv('DB_PORT', '5432'),
@@ -142,7 +143,7 @@ DATABASE_CONFIG = {
 }
 
 # Content Generation Configuration
-CONTENT_CONFIG = {
+CONTENT_CONFIG: Dict[str, Any] = {
     'min_article_length': 500,  # words
     'max_article_length': 1000,  # words
     'min_post_length': 100,  # characters
@@ -151,7 +152,7 @@ CONTENT_CONFIG = {
 }
 
 # Notification Configuration
-NOTIFICATION_CONFIG = {
+NOTIFICATION_CONFIG: Dict[str, Dict[str, Any]] = {
     'email': {
         'smtp_server': os.getenv('SMTP_SERVER', 'smtp.gmail.com'),
         'smtp_port': int(os.getenv('SMTP_PORT', '587')),
@@ -167,9 +168,16 @@ NOTIFICATION_CONFIG = {
 }
 
 # Logging Configuration
-LOGGING_CONFIG = {
+LOGGING_CONFIG: Dict[str, Any] = {
     'level': 'INFO',
     'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    'file_path': 'logs/news_workflow.log'
+    'file_path': os.path.join(os.path.dirname(os.path.dirname(__file__)), 'logs', 'news_workflow.log')
 }
 
+# Review Interface Configuration
+REVIEW_CONFIG: Dict[str, Any] = {
+    'secret_key': os.getenv('REVIEW_SECRET_KEY', 'dev-secret-key'),
+    'port': int(os.getenv('REVIEW_PORT', '5000')),
+    'debug': os.getenv('REVIEW_DEBUG', 'True').lower() == 'true',
+    'title': 'Agentic News Workflow - Content Review'
+}

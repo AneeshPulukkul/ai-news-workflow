@@ -8,11 +8,14 @@ import sys
 import os
 import logging
 import argparse
+import time
 from datetime import datetime
+from typing import Dict, List, Optional, Any, Union
 
-# Add current directory to path
+# Add project root to path
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
+# Import our modules
 from scrapers.news_scraper import NewsAggregator
 from content_generator.content_generator import ContentGenerator, ContentDatabase
 from config.config import LOGGING_CONFIG
@@ -30,16 +33,26 @@ logger = logging.getLogger(__name__)
 
 
 class WorkflowRunner:
-    """Main workflow orchestrator"""
+    """Main workflow orchestrator for the Agentic News Workflow System"""
     
     def __init__(self):
+        """Initialize the workflow runner with all required components"""
         self.news_aggregator = NewsAggregator()
         self.content_generator = ContentGenerator()
         self.content_database = ContentDatabase()
     
-    def run_daily_workflow(self, categories=None):
-        """Run the complete daily workflow"""
+    def run_daily_workflow(self, categories: Optional[List[str]] = None) -> Dict[str, Any]:
+        """
+        Run the complete daily workflow
+        
+        Args:
+            categories: Optional list of categories to filter by
+            
+        Returns:
+            Dictionary with workflow results
+        """
         logger.info("Starting daily agentic news workflow")
+        start_time = datetime.now()
         
         try:
             # Step 1: Scrape news
@@ -47,39 +60,72 @@ class WorkflowRunner:
             scraping_result = self.news_aggregator.run_daily_scraping()
             logger.info(f"Scraping completed: {scraping_result}")
             
+            # Add a small delay to ensure scraping results are available
+            time.sleep(2)
+            
             # Step 2: Generate content
             logger.info("Step 2: Generating content from scraped articles")
             if categories:
+                content_results = []
                 for category in categories:
                     logger.info(f"Generating content for category: {category}")
                     content_result = self.content_generator.generate_daily_content(category)
+                    content_results.append(content_result)
                     
                     if content_result['articles'] or content_result['posts']:
                         self.content_database.save_generated_content(content_result)
-                        logger.info(f"Generated and saved: {len(content_result['articles'])} articles, {len(content_result['posts'])} posts for {category}")
+                        logger.info(f"Generated and saved: {len(content_result['articles'])} articles, "
+                                   f"{len(content_result['posts'])} posts for {category}")
+                
+                # Combine results
+                combined_result = {
+                    'articles': [],
+                    'posts': [],
+                    'generation_summary': {
+                        'total_source_articles': sum(r['generation_summary']['total_source_articles'] for r in content_results),
+                        'articles_generated': sum(r['generation_summary'].get('articles_generated', 0) for r in content_results),
+                        'posts_generated': sum(r['generation_summary'].get('posts_generated', 0) for r in content_results),
+                        'categories': categories
+                    }
+                }
+                for result in content_results:
+                    combined_result['articles'].extend(result['articles'])
+                    combined_result['posts'].extend(result['posts'])
+                
+                content_result = combined_result
             else:
                 content_result = self.content_generator.generate_daily_content()
                 
                 if content_result['articles'] or content_result['posts']:
                     self.content_database.save_generated_content(content_result)
-                    logger.info(f"Generated and saved: {len(content_result['articles'])} articles, {len(content_result['posts'])} posts")
+                    logger.info(f"Generated and saved: {len(content_result['articles'])} articles, "
+                               f"{len(content_result['posts'])} posts")
             
             # Step 3: Report status
             pending_content = self.content_database.get_pending_content()
-            logger.info(f"Workflow completed. Pending review: {len(pending_content['articles'])} articles, {len(pending_content['posts'])} posts")
+            logger.info(f"Workflow completed. Pending review: {len(pending_content['articles'])} articles, "
+                       f"{len(pending_content['posts'])} posts")
+            
+            end_time = datetime.now()
+            execution_time = (end_time - start_time).total_seconds()
             
             return {
                 'success': True,
                 'scraping_result': scraping_result,
+                'generation_result': content_result.get('generation_summary', {}),
                 'pending_articles': len(pending_content['articles']),
-                'pending_posts': len(pending_content['posts'])
+                'pending_posts': len(pending_content['posts']),
+                'execution_time_seconds': execution_time,
+                'start_time': start_time.strftime('%Y-%m-%d %H:%M:%S'),
+                'end_time': end_time.strftime('%Y-%m-%d %H:%M:%S')
             }
         
         except Exception as e:
-            logger.error(f"Workflow failed: {e}")
+            logger.error(f"Workflow failed: {e}", exc_info=True)
             return {
                 'success': False,
-                'error': str(e)
+                'error': str(e),
+                'error_type': type(e).__name__
             }
     
     def run_scraping_only(self):

@@ -7,15 +7,18 @@ import requests
 import feedparser
 import time
 import logging
+import json
+import os
+import sqlite3
 from datetime import datetime, timedelta
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any, Union
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup
 from newspaper import Article
-import sqlite3
-import json
-import os
 
+# Import config using sys.path for relative imports
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from config.config import (
     NEWS_SOURCES, NEWS_API_CONFIG, SEARCH_KEYWORDS, 
     SCRAPING_CONFIG, DATABASE_CONFIG, LOGGING_CONFIG
@@ -34,36 +37,57 @@ logger = logging.getLogger(__name__)
 
 
 class NewsDatabase:
-    """Simple SQLite database handler for storing news articles"""
+    """
+    Simple SQLite database handler for storing news articles
+    """
     
-    def __init__(self, db_path: str = None):
+    def __init__(self, db_path: Optional[str] = None):
+        """
+        Initialize the news database
+        
+        Args:
+            db_path: Optional path to database file. If None, uses path from config.
+        """
         self.db_path = db_path or DATABASE_CONFIG['sqlite_path']
         self.init_database()
     
-    def init_database(self):
+    def init_database(self) -> None:
         """Initialize the database with required tables"""
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS articles (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    title TEXT NOT NULL,
-                    content TEXT,
-                    url TEXT UNIQUE,
-                    source TEXT,
-                    category TEXT,
-                    published_date TEXT,
-                    scraped_date TEXT,
-                    keywords TEXT,
-                    summary TEXT
-                )
-            ''')
-            conn.commit()
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS articles (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        title TEXT NOT NULL,
+                        content TEXT,
+                        url TEXT UNIQUE,
+                        source TEXT,
+                        category TEXT,
+                        published_date TEXT,
+                        scraped_date TEXT,
+                        keywords TEXT,
+                        summary TEXT
+                    )
+                ''')
+                conn.commit()
+                logger.info(f"Database initialized at {self.db_path}")
+        except Exception as e:
+            logger.error(f"Database initialization error: {e}")
+            raise
     
-    def save_article(self, article_data: Dict) -> bool:
-        """Save an article to the database"""
+    def save_article(self, article_data: Dict[str, Any]) -> bool:
+        """
+        Save an article to the database
+        
+        Args:
+            article_data: Dictionary containing article data
+            
+        Returns:
+            bool: True if article was saved successfully, False otherwise
+        """
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -88,8 +112,17 @@ class NewsDatabase:
             logger.error(f"Error saving article: {e}")
             return False
     
-    def get_recent_articles(self, category: str = None, days: int = 7) -> List[Dict]:
-        """Retrieve recent articles from the database"""
+    def get_recent_articles(self, category: Optional[str] = None, days: int = 7) -> List[Dict[str, Any]]:
+        """
+        Retrieve recent articles from the database
+        
+        Args:
+            category: Optional category to filter by
+            days: Number of days to look back
+            
+        Returns:
+            List of article dictionaries
+        """
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -98,7 +131,7 @@ class NewsDatabase:
                     SELECT * FROM articles 
                     WHERE scraped_date >= ? 
                 '''
-                params = [datetime.now().strftime('%Y-%m-%d')]
+                params = [(datetime.now() - timedelta(days=days)).strftime('%Y-%m-%d')]
                 
                 if category:
                     query += ' AND category = ?'
@@ -128,8 +161,18 @@ class RSSFeedScraper:
         self.session = requests.Session()
         self.session.headers.update({'User-Agent': SCRAPING_CONFIG['user_agent']})
     
-    def scrape_rss_feed(self, feed_url: str, category: str, source_name: str) -> List[Dict]:
-        """Scrape articles from RSS feed"""
+    def scrape_rss_feed(self, feed_url: str, category: str, source_name: str) -> List[Dict[str, Any]]:
+        """
+        Scrape articles from RSS feed
+        
+        Args:
+            feed_url: URL of the RSS feed
+            category: Category for the articles
+            source_name: Name of the source
+            
+        Returns:
+            List of article dictionaries
+        """
         articles = []
         
         try:
@@ -190,8 +233,16 @@ class NewsAPIScraper:
         self.newsapi_key = NEWS_API_CONFIG['newsapi_org']['api_key']
         self.newsdata_key = NEWS_API_CONFIG['newsdata_io']['api_key']
     
-    def scrape_newsapi_org(self, category: str) -> List[Dict]:
-        """Scrape articles from NewsAPI.org"""
+    def scrape_newsapi_org(self, category: str) -> List[Dict[str, Any]]:
+        """
+        Scrape articles from NewsAPI.org
+        
+        Args:
+            category: Category to search for
+            
+        Returns:
+            List of article dictionaries
+        """
         articles = []
         
         if not self.newsapi_key:
@@ -237,6 +288,9 @@ class NewsAPIScraper:
                     articles.append(article_data)
                     logger.info(f"Scraped NewsAPI article: {article_data['title'][:50]}...")
                     
+                    # Add delay to respect rate limits
+                    time.sleep(SCRAPING_CONFIG['delay_between_requests'])
+                    
                 except Exception as e:
                     logger.error(f"Error processing NewsAPI article {article['url']}: {e}")
                     continue
@@ -266,8 +320,17 @@ class WebScraper:
         self.session = requests.Session()
         self.session.headers.update({'User-Agent': SCRAPING_CONFIG['user_agent']})
     
-    def scrape_website(self, source_config: Dict, category: str) -> List[Dict]:
-        """Scrape articles from a website using CSS selectors"""
+    def scrape_website(self, source_config: Dict[str, Any], category: str) -> List[Dict[str, Any]]:
+        """
+        Scrape articles from a website using CSS selectors
+        
+        Args:
+            source_config: Configuration for the source
+            category: Category for the articles
+            
+        Returns:
+            List of article dictionaries
+        """
         articles = []
         
         try:
@@ -306,7 +369,7 @@ class WebScraper:
                         'url': url,
                         'source': source_config['name'],
                         'category': category,
-                        'published_date': article.publish_date.strftime('%Y-%m-%d %H:%M:%S') if article.publish_date else '',
+                        'published_date': article.publish_date.strftime('%Y-%m-%d %H:%M:%S') if article.publish_date else datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                         'scraped_date': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                         'keywords': self._extract_keywords(article.text, category),
                         'summary': article.summary or (article.text[:500] + '...' if len(article.text) > 500 else article.text)
@@ -349,9 +412,18 @@ class NewsAggregator:
         self.api_scraper = NewsAPIScraper()
         self.web_scraper = WebScraper()
     
-    def scrape_all_sources(self) -> Dict[str, List[Dict]]:
-        """Scrape all configured news sources"""
-        all_articles = {'technology': [], 'leadership': []}
+    def scrape_all_sources(self) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Scrape all configured news sources
+        
+        Returns:
+            Dictionary of articles by category
+        """
+        all_articles = {}
+        
+        # Initialize all_articles with keys from NEWS_SOURCES
+        for category in NEWS_SOURCES.keys():
+            all_articles[category] = []
         
         for category, sources in NEWS_SOURCES.items():
             logger.info(f"Starting scraping for category: {category}")
@@ -375,8 +447,16 @@ class NewsAggregator:
         
         return all_articles
     
-    def save_articles_to_database(self, articles_by_category: Dict[str, List[Dict]]) -> int:
-        """Save all scraped articles to database"""
+    def save_articles_to_database(self, articles_by_category: Dict[str, List[Dict[str, Any]]]) -> int:
+        """
+        Save all scraped articles to database
+        
+        Args:
+            articles_by_category: Dictionary of articles by category
+            
+        Returns:
+            Number of articles saved
+        """
         total_saved = 0
         
         for category, articles in articles_by_category.items():
@@ -387,12 +467,17 @@ class NewsAggregator:
         logger.info(f"Saved {total_saved} articles to database")
         return total_saved
     
-    def get_daily_articles(self, category: str = None) -> List[Dict]:
+    def get_daily_articles(self, category: Optional[str] = None) -> List[Dict[str, Any]]:
         """Get articles scraped today"""
         return self.database.get_recent_articles(category, days=1)
     
-    def run_daily_scraping(self) -> Dict:
-        """Run the complete daily scraping workflow"""
+    def run_daily_scraping(self) -> Dict[str, Any]:
+        """
+        Run the complete daily scraping workflow
+        
+        Returns:
+            Summary dictionary with statistics
+        """
         logger.info("Starting daily news scraping workflow")
         start_time = datetime.now()
         
@@ -422,4 +507,3 @@ if __name__ == "__main__":
     aggregator = NewsAggregator()
     result = aggregator.run_daily_scraping()
     print(f"Scraping completed: {result}")
-

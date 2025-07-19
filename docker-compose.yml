@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  # Main workflow service
+  workflow:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agentic-news-workflow
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    command: python run_workflow.py
+    restart: unless-stopped
+    networks:
+      - agentic-network
+
+  # Review interface service
+  review:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: agentic-news-review
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    command: python review_interface/app.py
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    networks:
+      - agentic-network
+    depends_on:
+      - workflow
+
+networks:
+  agentic-network:
+    driver: bridge

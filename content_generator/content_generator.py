@@ -5,15 +5,17 @@ Handles content generation using OpenAI and LangChain
 
 import os
 import logging
-from datetime import datetime
-from typing import List, Dict, Optional
 import json
+import sqlite3
+from datetime import datetime
+from typing import List, Dict, Optional, Any, Union
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain.schema import HumanMessage, SystemMessage
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 import openai
 
+# Update import to use the new module structure
 from config.config import CONTENT_CONFIG, LOGGING_CONFIG
 from scrapers.news_scraper import NewsDatabase
 
@@ -33,7 +35,12 @@ class ContentGenerator:
     """AI-powered content generator using OpenAI and LangChain"""
     
     def __init__(self, model_name: str = "gpt-4.1-mini"):
-        """Initialize the content generator with OpenAI model"""
+        """
+        Initialize the content generator with OpenAI model
+        
+        Args:
+            model_name: Name of the OpenAI model to use
+        """
         self.model_name = model_name
         self.llm = ChatOpenAI(
             model=model_name,
@@ -46,8 +53,16 @@ class ContentGenerator:
         )
         self.database = NewsDatabase()
     
-    def summarize_articles(self, articles: List[Dict]) -> List[Dict]:
-        """Summarize multiple articles into key insights"""
+    def summarize_articles(self, articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Summarize multiple articles into key insights
+        
+        Args:
+            articles: List of article dictionaries
+            
+        Returns:
+            List of summary dictionaries with original article, summary, and key points
+        """
         summaries = []
         
         for article in articles:
@@ -65,8 +80,16 @@ class ContentGenerator:
         
         return summaries
     
-    def _summarize_single_article(self, article: Dict) -> str:
-        """Summarize a single article"""
+    def _summarize_single_article(self, article: Dict[str, Any]) -> str:
+        """
+        Summarize a single article
+        
+        Args:
+            article: Article dictionary with title and content
+            
+        Returns:
+            Summarized text
+        """
         prompt = ChatPromptTemplate.from_messages([
             ("system", """You are an expert content summarizer. Create a concise, informative summary 
             of the given news article. Focus on the key facts, implications, and relevance to the topic.
@@ -94,7 +117,15 @@ class ContentGenerator:
             return ""
     
     def _extract_key_points(self, content: str) -> List[str]:
-        """Extract key points from article content"""
+        """
+        Extract key points from article content
+        
+        Args:
+            content: Article content text
+            
+        Returns:
+            List of key points as strings
+        """
         prompt = ChatPromptTemplate.from_messages([
             ("system", """Extract 3-5 key points from the given article content. 
             Each point should be a concise bullet point highlighting important information.
@@ -122,8 +153,18 @@ class ContentGenerator:
             logger.error(f"Error extracting key points: {e}")
             return []
     
-    def generate_article(self, topic: str, source_articles: List[Dict], target_length: int = 800) -> Dict:
-        """Generate a comprehensive article based on multiple source articles"""
+    def generate_article(self, topic: str, source_articles: List[Dict[str, Any]], target_length: int = 800) -> Dict[str, Any]:
+        """
+        Generate a comprehensive article based on multiple source articles
+        
+        Args:
+            topic: The main topic for the article
+            source_articles: List of source article dictionaries
+            target_length: Target word count for the generated article
+            
+        Returns:
+            Dictionary containing the generated article
+        """
         
         # First, summarize the source articles
         summaries = self.summarize_articles(source_articles)
@@ -187,8 +228,17 @@ class ContentGenerator:
             logger.error(f"Error generating article: {e}")
             return {}
     
-    def generate_social_posts(self, article: Dict, platforms: List[str] = ['twitter', 'linkedin']) -> Dict:
-        """Generate social media posts based on an article"""
+    def generate_social_posts(self, article: Dict[str, Any], platforms: List[str] = ['twitter', 'linkedin']) -> Dict[str, Any]:
+        """
+        Generate social media posts based on an article
+        
+        Args:
+            article: Article dictionary
+            platforms: List of social media platforms to generate posts for
+            
+        Returns:
+            Dictionary of posts by platform
+        """
         posts = {}
         
         for platform in platforms:
@@ -202,8 +252,17 @@ class ContentGenerator:
         
         return posts
     
-    def _generate_platform_post(self, article: Dict, platform: str) -> Dict:
-        """Generate a post for a specific social media platform"""
+    def _generate_platform_post(self, article: Dict[str, Any], platform: str) -> Dict[str, Any]:
+        """
+        Generate a post for a specific social media platform
+        
+        Args:
+            article: Article dictionary
+            platform: Name of the social media platform
+            
+        Returns:
+            Dictionary containing the generated post
+        """
         
         platform_configs = {
             'twitter': {
@@ -259,8 +318,17 @@ class ContentGenerator:
             logger.error(f"Error generating {platform} post: {e}")
             return {}
     
-    def _create_article_context(self, summaries: List[Dict], topic: str) -> str:
-        """Create context string from article summaries"""
+    def _create_article_context(self, summaries: List[Dict[str, Any]], topic: str) -> str:
+        """
+        Create context string from article summaries
+        
+        Args:
+            summaries: List of summary dictionaries
+            topic: Article topic
+            
+        Returns:
+            Formatted context string
+        """
         context_parts = []
         
         for i, summary_data in enumerate(summaries, 1):
@@ -278,8 +346,16 @@ URL: {article['url']}
         
         return '\n'.join(context_parts)
     
-    def generate_daily_content(self, category: str = None) -> Dict:
-        """Generate daily content based on recent articles"""
+    def generate_daily_content(self, category: Optional[str] = None) -> Dict[str, Any]:
+        """
+        Generate daily content based on recent articles
+        
+        Args:
+            category: Optional category to filter by
+            
+        Returns:
+            Dictionary containing generated articles and posts
+        """
         logger.info(f"Starting daily content generation for category: {category or 'all'}")
         
         # Get recent articles from database
@@ -336,8 +412,17 @@ URL: {article['url']}
         logger.info(f"Content generation completed: {generated_content['generation_summary']}")
         return generated_content
     
-    def _select_top_articles(self, articles: List[Dict], max_count: int = 5) -> List[Dict]:
-        """Select top articles based on relevance and keywords"""
+    def _select_top_articles(self, articles: List[Dict[str, Any]], max_count: int = 5) -> List[Dict[str, Any]]:
+        """
+        Select top articles based on relevance and keywords
+        
+        Args:
+            articles: List of article dictionaries
+            max_count: Maximum number of articles to select
+            
+        Returns:
+            List of selected article dictionaries
+        """
         # Simple scoring based on keyword count and content length
         scored_articles = []
         
@@ -372,54 +457,70 @@ URL: {article['url']}
 class ContentDatabase:
     """Database handler for generated content"""
     
-    def __init__(self, db_path: str = None):
-        self.db_path = db_path or 'data/content_database.db'
+    def __init__(self, db_path: Optional[str] = None):
+        """
+        Initialize the content database
+        
+        Args:
+            db_path: Optional path to database file
+        """
+        self.db_path = db_path or os.path.join(os.path.dirname(os.path.dirname(__file__)), 'data', 'content_database.db')
         self.init_database()
     
-    def init_database(self):
-        """Initialize the content database"""
-        import sqlite3
+    def init_database(self) -> None:
+        """Initialize the content database with required tables"""
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
         
-        with sqlite3.connect(self.db_path) as conn:
-            cursor = conn.cursor()
-            
-            # Generated articles table
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS generated_articles (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    title TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    topic TEXT,
-                    source_count INTEGER,
-                    generated_date TEXT,
-                    word_count INTEGER,
-                    source_articles TEXT,
-                    status TEXT DEFAULT 'pending',
-                    user_feedback TEXT
-                )
-            ''')
-            
-            # Generated posts table
-            cursor.execute('''
-                CREATE TABLE IF NOT EXISTS generated_posts (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    platform TEXT NOT NULL,
-                    content TEXT NOT NULL,
-                    character_count INTEGER,
-                    generated_date TEXT,
-                    source_article_title TEXT,
-                    status TEXT DEFAULT 'pending',
-                    user_feedback TEXT
-                )
-            ''')
-            
-            conn.commit()
+        try:
+            with sqlite3.connect(self.db_path) as conn:
+                cursor = conn.cursor()
+                
+                # Generated articles table
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS generated_articles (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        title TEXT NOT NULL,
+                        content TEXT NOT NULL,
+                        topic TEXT,
+                        source_count INTEGER,
+                        generated_date TEXT,
+                        word_count INTEGER,
+                        source_articles TEXT,
+                        status TEXT DEFAULT 'pending',
+                        user_feedback TEXT
+                    )
+                ''')
+                
+                # Generated posts table
+                cursor.execute('''
+                    CREATE TABLE IF NOT EXISTS generated_posts (
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        platform TEXT NOT NULL,
+                        content TEXT NOT NULL,
+                        character_count INTEGER,
+                        generated_date TEXT,
+                        source_article_title TEXT,
+                        status TEXT DEFAULT 'pending',
+                        user_feedback TEXT
+                    )
+                ''')
+                
+                conn.commit()
+                logger.info(f"Content database initialized at {self.db_path}")
+        except Exception as e:
+            logger.error(f"Content database initialization error: {e}")
+            raise
     
-    def save_generated_content(self, content_data: Dict) -> bool:
-        """Save generated content to database"""
-        import sqlite3
+    def save_generated_content(self, content_data: Dict[str, Any]) -> bool:
+        """
+        Save generated content to database
         
+        Args:
+            content_data: Dictionary containing articles and posts
+            
+        Returns:
+            True if saved successfully, False otherwise
+        """
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -461,10 +562,13 @@ class ContentDatabase:
             logger.error(f"Error saving generated content: {e}")
             return False
     
-    def get_pending_content(self) -> Dict:
-        """Get content pending review"""
-        import sqlite3
+    def get_pending_content(self) -> Dict[str, List[Dict[str, Any]]]:
+        """
+        Get content pending review
         
+        Returns:
+            Dictionary containing lists of pending articles and posts
+        """
         try:
             with sqlite3.connect(self.db_path) as conn:
                 cursor = conn.cursor()
@@ -506,4 +610,3 @@ if __name__ == "__main__":
         print(f"Generated and saved: {len(result['articles'])} articles, {len(result['posts'])} posts")
     else:
         print("No content generated")
-

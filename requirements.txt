@@ -26,8 +26,16 @@ pydantic==2.11.7
 # Database
 sqlalchemy==2.0.41
 
-# Development and testing
+# Typing
+types-requests==2.32.0.20240426
+typing-extensions==4.12.2
+
+# Testing
 pytest==8.3.4
+pytest-mock==3.13.0
+
+# Development tools
 black==24.10.0
 flake8==7.1.1
-
+isort==5.13.2
+mypy==1.10.0
